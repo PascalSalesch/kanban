@@ -1,0 +1,32 @@
+{
+  "name": "@pascalsalesch/kanban",
+  "version": "0.0.1",
+  "description": "A workflow using Kanban and GitHub Flow for semantically versioned software.",
+  "main": "src/kanban.mjs",
+  "bin": {
+    "kanban": "src/kanban.mjs"
+  },
+  "scripts": {
+    "start": "./src/kanban.mjs",
+    "test": "c8 --config tests/c8.json npm-run-all test:*",
+    "test:lint": "eslint",
+    "test:unit": "mocha --config tests/mocha.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "c8": "^8.0.1",
+    "eslint": "^8.50.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-jsdoc": "^46.8.2",
+    "eslint-plugin-n": "^16.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "mocha": "^10.2.0",
+    "npm-run-all": "^4.1.5"
+  },
+  "dependencies": {
+    "semver": "^7.5.4"
+  }
+}

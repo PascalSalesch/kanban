@@ -1,0 +1,48 @@
+# This workflow is triggered when a pull request is closed.
+# If the head branch ends with "-release", it will create and publish a new release.
+# Permissions:
+# - write permissions to the repository to create releases.
+# - write permissions to issues to remove the PR from milestones.
+# - write permissions to actions to dispatch the "on_release" workflow.
+# - read permissions to packages to install kanban.
+name: "Kanban"
+
+on:
+  pull_request:
+    branches:
+      - $default-branch
+    types:
+      - closed
+
+jobs:
+  on_pull_request_end:
+    name: Pull Request End
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: read
+      actions: write
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: $default-branch
+    - uses: actions/setup-node@v3
+    - run: npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+    - run: npm config set @pascalsalesch:registry https://npm.pkg.github.com
+    - run: npm install -g @pascalsalesch/kanban
+
+    # This step will only run if the pull request was merged.
+    - if: github.event.pull_request.merged == true
+      run: kanban run on_pull_request_merge
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+
+    # This step will only run if the pull request was not merged.
+    - if: github.event.pull_request.merged == false
+      run: kanban run on_pull_request_close
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_CONTEXT: ${{ toJson(github) }}

@@ -1,0 +1,35 @@
+# This workflow is triggered when a release is published.
+# It will close milestones with previous release versions
+# and create new milestones for the next "patch", "minor", and "major" releases.
+name: "Kanban"
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: The reference to the branch or tag that triggered the workflow.
+        default: $default-branch
+        required: false
+        type: string
+
+jobs:
+  on_release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      packages: read
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.inputs.ref }}
+    - uses: actions/setup-node@v3
+    - run: npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+    - run: npm config set @pascalsalesch:registry https://npm.pkg.github.com
+    - run: npm install -g @pascalsalesch/kanban
+    - run: kanban run on_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_CONTEXT: ${{ toJson(github) }}

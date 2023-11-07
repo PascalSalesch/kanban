@@ -85,7 +85,7 @@ export async function getIssue () {
   const issueNumber = branch.split('-').pop()
   if (!issueNumber) throw new Error('Could not find issue number in the last part of the branch name.')
 
-  const issue = await api(`issues/${issueNumber}`)
+  const issue = (await api(`issues/${issueNumber}`))[0]
   if (!issue) throw new Error(`Could not find issue #${issueNumber}.`)
 
   return issue

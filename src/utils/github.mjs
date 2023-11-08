@@ -42,11 +42,14 @@ export async function api (path, options = {}) {
     const page = await fetch(url, { method, headers, body })
 
     if (!page.ok) {
-      const error = await page.json()
-      const err = `Invalid response for "${url}" from GitHub API: ${error.message}.`
-      if (error.message === 'Not Found' && !(process.env.GITHUB_TOKEN)) throw new Error(`${err} Make sure you have set the "GITHUB_TOKEN" environment variable.`)
-      const hints = [error.message, JSON.stringify(error.errors, null, 2), body].filter(Boolean).join('\n')
-      throw new Error(`Invalid response for "${url}" from GitHub API: ${hints}`)
+      const err = await page.json()
+      const hints = [
+        err.message,
+        JSON.stringify(err.errors, null, 2),
+        body,
+        (err.message === 'Not Found' && !(process.env.GITHUB_TOKEN) && 'Make sure you have set the "GITHUB_TOKEN" environment variable.')
+      ].filter(Boolean).join('\n')
+      throw new Error(`Invalid response for "${url}" from GitHub API: ${hints}.`)
     }
 
     // add response to array

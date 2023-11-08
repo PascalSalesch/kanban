@@ -30,7 +30,7 @@ export default async function onPullRequest () {
   // create the milestone associated with the pull request
   const milestoneName = await getMilestoneName(pullRequest)
   const milestone = await (async () => {
-    const milestones = await github.api('milestones', { params: { state: 'open' } })
+    const milestones = await github.api('milestones', { params: {} })
     const exists = milestones.find(milestone => milestone.title === milestoneName)
     if (exists) {
       console.log(`Milestone "${milestoneName}" already exists.`)

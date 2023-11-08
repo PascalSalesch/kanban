@@ -25,9 +25,10 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.head.ref }}
     - uses: actions/setup-node@v3
-    - run: npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
-    - run: npm config set @pascalsalesch:registry https://npm.pkg.github.com
-    - run: npm install -g @pascalsalesch/kanban
+    - run: |
+        npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+        npm config set @pascalsalesch:registry https://npm.pkg.github.com
+        npm install -g @pascalsalesch/kanban
     - run: kanban run on_pull_request
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

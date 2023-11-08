@@ -29,9 +29,10 @@ jobs:
       with:
         ref: $default-branch
     - uses: actions/setup-node@v3
-    - run: npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
-    - run: npm config set @pascalsalesch:registry https://npm.pkg.github.com
-    - run: npm install -g @pascalsalesch/kanban
+    - run: |
+        npm config set //npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}
+        npm config set @pascalsalesch:registry https://npm.pkg.github.com
+        npm install -g @pascalsalesch/kanban
 
     # This step will only run if the pull request was merged.
     - if: github.event.pull_request.merged == true
